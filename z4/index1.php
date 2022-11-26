@@ -118,11 +118,11 @@ foreach ($files as $file)
         {
             if (strpos($file, '.jpg') !== false || strpos($file, '.png') !== false || strpos($file, '.gif') !== false)
             {
-                $file = "<img src='$loc' width='200' height='200'>";
+                $file = "<a href='$loc' target='_blank'><img src='$loc' width='200' height='200'></a>";
             }
             elseif (strpos($file, '.mp4') !== false)
             {
-                $file = "<video width='200' height='200' controls muted autoplay><source src='$loc' type='video/mp4'></video>";
+                $file = "<video width='200' height='200' controls><source src='$loc' type='video/mp4'></video>";
             }
             elseif (strpos($file, '.mp3') !== false)
             {
