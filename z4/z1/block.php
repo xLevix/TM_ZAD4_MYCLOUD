@@ -64,20 +64,37 @@ else
     $user_id = mysqli_fetch_array($user_id);
     $user_id = $user_id['id'];
 
+
     $attempts = mysqli_query($link,'select users.id, password, count(loginattempts.id) from users left join loginattempts on users.id = loginattempts.user_id where users.username = "'.$user.'"  group by users.id');  //zwroc ilosc prob logowania uztkownika
 
     if(mysqli_fetch_array($attempts)['count(loginattempts.id)'] > 2){ //jezeli jest wiecej niz 2 proba logowania
-        $last_attempt = mysqli_query($link,'select timestamp from loginattempts where user_id = "'.$user_id.'" order by timestamp desc limit 1'); //zwroc ostatnia probe logowania
-        $last_attempt = mysqli_fetch_array($last_attempt);
-        $last_attempt = $last_attempt['timestamp'];
+        $attempts= mysqli_query($link,'select timestamp from loginattempts where user_id = "'.$user_id.'" order by timestamp desc limit 3'); //zwroc ostatnia probe logowania
+        $attempts = mysqli_fetch_array($attempts);
+        //slice all timestamps
+        $attempts = array_slice($attempts, 0, 3);
 
-        //jezeli ostatnia proba logowania byla wczesniej niz 1 minut temu
-        if(strtotime($last_attempt) > strtotime(date('Y-m-d H:i:s', time())) - 60) {
+        //sprawdzenie czy ostatnie 3 prob logowania byly w ciagu 5 minut
+        $flag = false;
+        foreach ($attempts as $attempt){
+            $date = new DateTime($attempt);
+            $now = new DateTime();
+            $interval = $date->diff($now);
+            if($interval->i > 5){
+                $flag = true;
+            }
+        }
+
+        //jezeli ostatnie 3 prob logowania byly w ciagu 5 minut i ostatnia proba byla byla w ciagu 1 minuty nastepuje blokada konta i wyswietlenie komunikatu o probach po prawidlowym logowaniu
+        if(strtotime($attempts[0]) > strtotime(date('Y-m-d H:i:s', time())) - 60  && !$flag) {
+            $ip = mysqli_query($link,'select ip from loginattempts where user_id = "'.$user_id.'" and timestamp = "'.$attempts[0].'"');
+            $ip = mysqli_fetch_row($ip);
+            $_SESSION['warning'] = 'DATA: ' . $attempts[0] . ' IP: ' . $ip[0]; //zapisanie do sesji informacji o ostatniej probie logowania
             echo "Zbyt wiele prób logowania. Spróbuj ponownie za 1 minutę";
             header("refresh:3; url=index5.php");
         }else{
             check($user_id);
         }
+
     }else{
         check($user_id);
     }

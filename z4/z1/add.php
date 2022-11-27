@@ -29,6 +29,10 @@ else
     $sql = "INSERT INTO users (username, password) VALUES ('$user', '$pass')"; //dodaanie uzytkownika do bazy
     if (mysqli_query($link, $sql)) {
         echo "Dodano uzytkownika";
+        $username = $user;
+        if (!file_exists("../users/$username")) { //po zarejestrowaniu tworzymy folder dla uzytkownika
+            mkdir("../users/$username", 0777, true);
+        }
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($link);
     }

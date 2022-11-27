@@ -1,8 +1,10 @@
 <?php
 session_start();
+
 ini_set('display_errors', '1'); // pokazuje błędy
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
+
 if (!isset($_SESSION['loggedin']))
 {
     header('Location: z1/index5.php');
@@ -10,6 +12,7 @@ if (!isset($_SESSION['loggedin']))
 }
 $dbhost="pauszeipawel.mysql.db"; $dbuser="pauszeipawel"; $dbpassword="Yr4pm4sUh4X5VQK"; $dbname="pauszeipawel";
 $connection = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
+
 if (!$connection)
 {
     echo " MySQL Connection error." . PHP_EOL;
@@ -30,16 +33,20 @@ if (!$connection)
         document.cookie = "location=" + location;
         window.location.reload();
     }
-
 </script>
 
 <?php
 
-//print every user files
+if (isset($_SESSION['warning']))  //jezeli bylo duzo prob nieskutecznych logowan, wyswietl alert po poprawnym zalogowaniu
+{
+    echo "<script>alert('UWAGA! OSTANIA NIEUDANA PROBA LOGOWANIA: ".$_SESSION['warning']."');</script>";
+    unset($_SESSION['warning']);
+}
+
 $username = $_SESSION['username'];
-//if Sessopm dir is set
 $dir = "users/$username";
 
+//jezeli zmienna sesyjna dir jest ustawiona, to znaczy, ze uzytkownik kliknal ikone wejscia do danego folderu, wiec musimy zmienic sciezke wystietlnaych plikow na sciezke folderu, ktory uzytkownik wybral i wyswietlic obrazek do powrotu do folderu nadrzednego
 if(isset($_COOKIE['dir'])){
     $dir = $_COOKIE['dir'];
     if ($dir != "users/$username"){
@@ -54,6 +61,7 @@ if(isset($_COOKIE['dir'])){
     </script>";
 }
 
+//jezeli uzytkownik jest w folderze nadrzednym ma mozliwosc dodania nowego folderu
 if (!isset($_COOKIE['dir']) || $_COOKIE['dir'] == "users/$username"){
     echo "<input type='image' src='create.png' width='50' height='50' onclick='createdir()'>";
     echo "<script>
@@ -74,6 +82,9 @@ if (isset($_COOKIE['create'])){
     </script>";
 }
 
+//przy usuwaniu plikow (nacisniecie ikony kosza) wywoluje sie funckja remove, ktora ustawia cookie z dana sciezka do pliku
+//wiec jezeli cookie jest aktywne, usuwam dany plik i odswiezam strone
+//jezeli uzytkownik usunal folder, to najpierw usuwam wszystkie pliki wewnatrz folderu, a dopiero potem folder
 if (isset($_COOKIE['location'])){
     $location = $_COOKIE['location'];
     if (is_dir($location)){
@@ -108,6 +119,7 @@ foreach ($files as $file)
             $file="<input type='image' src='inside.png' width='50' height='50' onclick=reload('".$loc."')>";
             print "<TR><TD>$name</TD><td>$file</td><td><input type='image' src='delete.png' width='50' height='50' onclick=remove('".$loc."')></td></TR>\n";
             echo "<script>
+            //zmiana sciezki wyswietlanych plikow na sciezke folderu, ktory uzytkownik wybral
             function reload(location){
                 document.cookie = 'dir='+location;
                 window.location.reload();
@@ -116,6 +128,7 @@ foreach ($files as $file)
         }
         else
         {
+            //wyswietlanie mniejszej wersji obrazka/ filmow / plikow audio
             if (strpos($file, '.jpg') !== false || strpos($file, '.png') !== false || strpos($file, '.gif') !== false)
             {
                 $file = "<a href='$loc' target='_blank'><img src='$loc' width='200' height='200'></a>";
@@ -129,8 +142,8 @@ foreach ($files as $file)
                 $file = "<audio controls><source src='$loc' type='audio/mpeg'></audio>";
             }
 
-            //add image delete.png that delete file on click
-            print "<TR><TD><a href='users/$username/$name' download>$name</a></TD><td>$file</td><td> <input type='image' src='delete.png' width='50' height='50' onclick=remove('".$loc."') > </td></TR>\n";
+            //po kliknieciu na nazwe pliku, nastepuje pobranie pliku
+            print "<TR><TD><a href='$loc' download>$name</a></TD><td>$file</td><td> <input type='image' src='delete.png' width='50' height='50' onclick=remove('".$loc."') > </td></TR>\n";
         }
 
     }
