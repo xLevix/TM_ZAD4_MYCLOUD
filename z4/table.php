@@ -9,7 +9,7 @@ if ($_SESSION['username']=="admin"){
 
 }
 
-$mysqli = new mysqli("pauszeipawel.mysql.db", "pauszeipawel", "Yr4pm4sUh4X5VQK", "pauszeipawel");
+$mysqli = new mysqli("pauszeipawel.mysql.db", "pauszeipawel", "XXXXX", "pauszeipawel");
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 }
