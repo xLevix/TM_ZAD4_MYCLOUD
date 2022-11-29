@@ -12,7 +12,7 @@ error_reporting(E_ALL);
 <?php
 $user = htmlentities ($_POST['user'], ENT_QUOTES, "UTF-8"); // rozbrojenie potencjalnej bomby w zmiennej $user
 $pass = htmlentities ($_POST['pass'], ENT_QUOTES, "UTF-8"); // rozbrojenie potencjalnej bomby w zmien
-$link = mysqli_connect("pauszeipawel.mysql.db", "pauszeipawel", "Yr4pm4sUh4X5VQK", "pauszeipawel");
+$link = mysqli_connect("pauszeipawel.mysql.db", "pauszeipawel", "XXXXX", "pauszeipawel");
 if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
 mysqli_query($link, "SET NAMES 'utf8'"); // ustawienie polskich znaków
 $result = mysqli_query($link, "SELECT * FROM users WHERE username='$user'"); // wiersza,
