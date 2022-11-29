@@ -10,7 +10,7 @@ if (!isset($_SESSION['loggedin']))
     header('Location: z1/index5.php');
     exit();
 }
-$dbhost="pauszeipawel.mysql.db"; $dbuser="pauszeipawel"; $dbpassword="Yr4pm4sUh4X5VQK"; $dbname="pauszeipawel";
+$dbhost="pauszeipawel.mysql.db"; $dbuser="pauszeipawel"; $dbpassword="XXXXX"; $dbname="pauszeipawel";
 $connection = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname);
 
 if (!$connection)
