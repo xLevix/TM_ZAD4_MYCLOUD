@@ -23,7 +23,7 @@ if ($pass != $pass2) //sprawdzebue czy hasła sa takie same
 }
 else
 {
-    $link = mysqli_connect("pauszeipawel.mysql.db", "pauszeipawel", "Yr4pm4sUh4X5VQK", "pauszeipawel");
+    $link = mysqli_connect("pauszeipawel.mysql.db", "pauszeipawel", "XXXXXX", "pauszeipawel");
     if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
     //register user
     $sql = "INSERT INTO users (username, password) VALUES ('$user', '$pass')"; //dodaanie uzytkownika do bazy
